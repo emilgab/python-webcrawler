@@ -23,7 +23,9 @@ class Crawl():
         self.starting_url = starting_url
         self.initialCrawl(self.starting_url)
 
+
     def initialCrawl(self, url):
+        urllib.request.Request(url)
         req = urllib.request.Request(url)
         resp = urllib.request.urlopen(req)
         print(resp.read())

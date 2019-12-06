@@ -22,10 +22,21 @@ def welcome():
     print(decoration)
     print("\n"*(int(rows)//5))
     print("What website would you like to crawl?".center(int(columns)))
-    print("NOTE: the URL must include 'http(s)://''".center(int(columns)))
+    print(" ")
+    print("** NOTE **".center(int(columns)))
+    print("The URL must include 'http(s)://'".center(int(columns)))
+    print("A folder will be created containing crawl results".center(int(columns)))
     print("\n"*(int(rows)//5))
-    x = Crawl(input("URL: "))
-    print(x)
+
+    try:
+        x = Crawl(input("URL: "))
+        print(x)
+    except:
+        print(" ")
+        print("** !! **".center(int(columns)))
+        print("Invalid URL, please try again.".center(int(columns)))
+        print("** !! **".center(int(columns)))
+        print(" ")
 
 if __name__ == '__main__':
     welcome()
