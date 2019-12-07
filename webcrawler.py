@@ -31,7 +31,7 @@ def welcome():
     try:
         x = Crawl(input("URL: "))
         print(x)
-    except:
+    except ValueError:
         print(" ")
         print("** !! **".center(int(columns)))
         print("Invalid URL, please try again.".center(int(columns)))

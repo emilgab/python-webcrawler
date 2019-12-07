@@ -16,19 +16,32 @@ class Crawl():
     # The object will store time data on when it was run.
     # This variable will  be used as filename for the crawl result and for the print statement
     run_date_and_time = '{0:%d-%m-%Y--%H:%M:%S}'.format(datetime.datetime.now())
-    # The following variable "known_domains" will contain all unique urls
+    # The following variable "known_domains" will contain all unique urls found during the crawl
     known_domains = []
 
     def __init__(self, starting_url):
+        '''
+        Initialise the object with the starting URL of the crawl
+        '''
         self.starting_url = starting_url
+        # Creates a regex pattern using the starting URL defined by the user
+        self.regex_pat = 'href="('+self.starting_url+'+.*?)"'
+        # Calls the method "initialCrawl"
         self.initialCrawl(self.starting_url)
 
-
     def initialCrawl(self, url):
-        urllib.request.Request(url)
-        req = urllib.request.Request(url)
-        resp = urllib.request.urlopen(req)
-        print(resp.read())
+        try:
+            # Parses the website using urllib.request
+            req = urllib.request.Request(url)
+            resp = urllib.request.urlopen(req)
+            # stores the result of ReGex
+            re_result = re.findall(self.regex_pat,str(resp.read()))
+            if re_result:
+                    print(re_result)
+            else:
+                return False
+        except:
+            print("\nCould not find the URL, please try again")
 
     def recursiveCrawl(self, url):
         pass
@@ -37,6 +50,9 @@ class Crawl():
         pass
 
     def __str__(self):
+        '''
+        Prints out the information on the parse when printing the object
+        '''
         return "\nStarting domain crawled: %s \nDate and time: %s\n" % (self.starting_url, self.run_date_and_time)
 
     def crawlNext(self):
