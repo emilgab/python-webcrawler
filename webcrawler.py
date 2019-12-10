@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# crawl.py
+# webcrawler.py
 # ~ This is the main script for initialising the crawling of a website ~
 
 # imports

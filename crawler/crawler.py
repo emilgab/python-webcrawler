@@ -30,16 +30,19 @@ class Crawl():
         self.initialCrawl(self.starting_url)
 
     def initialCrawl(self, url):
+        '''
+        Takes in the starting URL to crawl
+        '''
         try:
             # Parses the website using urllib.request
             req = urllib.request.Request(url)
-            resp = urllib.request.urlopen(req)
+            urlopen = urllib.request.urlopen(req)
             # stores the result of ReGex
-            re_result = re.findall(self.regex_pat,str(resp.read()))
+            re_result = re.findall(self.regex_pat,str(urlopen.read()))
             if re_result:
-                    print(re_result)
-            else:
-                return False
+                for i in re_result:
+                    self.known_domains.append(i)
+                    print(i)
         except:
             print("\nCould not find the URL, please try again")
 
@@ -49,7 +52,7 @@ class Crawl():
     def writeToFile(self):
         pass
 
-    def __str__(self):
+    def __repr__(self):
         '''
         Prints out the information on the parse when printing the object
         '''
