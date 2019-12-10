@@ -3,7 +3,6 @@
 # ~ This is the main script for initialising the crawling of a website ~
 
 # imports
-import sys
 import os
 from crawler.crawler import Crawl
 
