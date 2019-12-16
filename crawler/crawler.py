@@ -55,7 +55,7 @@ class Crawl():
         '''
         Prints out the information on the parse when printing the object
         '''
-        return "\nStarting domain crawled: %s \nDate and time: %s\n" % (self.starting_url, self.run_date_and_time)
+        return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s" % (self.starting_url, self.run_date_and_time, self.regex_pat)
 
     def crawlNext(self):
         pass

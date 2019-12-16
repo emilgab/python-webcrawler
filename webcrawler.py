@@ -7,8 +7,12 @@ import os
 from crawler.crawler import Crawl
 
 def welcome():
+    # Reads the size of the terminal window.
+    # This is used later to centre the instructions to the scrren
     rows, columns = os.popen('stty size','r').read().split()
 
+    # Some declerations that will be a part of the instructions window
+    # The .center() is a method of the string object that will center the string based on a length.
     decoration = '--+ ~ * ~ +--'.center(int(columns))
     welcome_msg = "Welcome to this Python web crawler!".center(int(columns))
     credit = "Created by Emil Gabrielli".center(int(columns))
@@ -24,7 +28,7 @@ def welcome():
     print(" ")
     print("** NOTE **".center(int(columns)))
     print("The URL must include 'http(s)://'".center(int(columns)))
-    print("A folder will be created containing crawl results".center(int(columns)))
+    print("A folder will be created in the same path as the script containing crawl results".center(int(columns)))
     print("\n"*(int(rows)//5))
 
     try:
