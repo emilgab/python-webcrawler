@@ -79,9 +79,10 @@ class Crawl():
             # creates disctionary if it is missing
             os.mkdir("crawl_results")
         os.chdir("crawl_results")
-        # Opens the file and closes it right away.
-        # But now we have a file we can append to.
-        open(self.crawl_filename+".txt",'w+').close()
+        if not os.path.exists(self.crawl_filename):
+            # Opens the file and closes it right away.
+            # But now we have a file we can append to.
+            open(self.crawl_filename+".txt",'w+').close()
 
 
     def __repr__(self):
