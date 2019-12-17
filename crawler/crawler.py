@@ -16,7 +16,9 @@ class Crawl():
     # This variable will  be used as filename for the crawl result and for the print statement
     run_date_and_time = '{0:%d-%m-%Y--%H:%M:%S}'.format(datetime.datetime.now())
     # The following variable "known_domains" will contain all unique urls found during the crawl
-    known_domains = []
+    initial_crawl_result = []
+    all_links = []
+    crawl_tree = {}
 
     def __init__(self, starting_url):
         '''
@@ -40,8 +42,10 @@ class Crawl():
             re_result = re.findall(self.regex_pat,str(urlopen.read()))
             if re_result:
                 for i in re_result:
-                    self.known_domains.append(i)
+                    self.initial_crawl_result.append(i)
                     print(i)
+            # Calls the recursiveCrawl method and passes in the first domain
+            self.recursiveCrawl(self.initial_crawl_result[0])
         except:
             print("\nCould not find the URL, please try again")
 
@@ -55,7 +59,7 @@ class Crawl():
         '''
         Prints out the information on the parse when printing the object
         '''
-        return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s" % (self.starting_url, self.run_date_and_time, self.regex_pat)
+        return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s\n" % (self.starting_url, self.run_date_and_time, self.regex_pat)
 
     def crawlNext(self):
         pass
