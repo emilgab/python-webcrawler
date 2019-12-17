@@ -18,6 +18,7 @@ def welcome():
     credit = "Created by Emil Gabrielli".center(int(columns))
     course_inf = "for OsloMet course ACIT4420: Problem-Solving with scripting".center(int(columns))
 
+    # Prints out the amount of rows in the terminal in line breaks
     print("\n"*int(rows))
     print(decoration)
     print(welcome_msg)
@@ -29,10 +30,15 @@ def welcome():
     print("** NOTE **".center(int(columns)))
     print("The URL must include 'http(s)://'".center(int(columns)))
     print("A folder will be created in the same path as the script containing crawl results".center(int(columns)))
+    print(" ")
+    print("You will be asked to enter a word to count.".center(int(columns)))
+    print("If you don't want to count a word then just input a space and hit enter.".center(int(columns)))
     print("\n"*(int(rows)//5))
 
     try:
-        x = Crawl(input("URL: "))
+        # Asks the user for the two required inputs for the Crawl object
+        x = Crawl(input("URL: "),input("What word would you like to count? "))
+        # Calls the __repr__ method of the Crawl object
         print(x)
     except ValueError:
         print(" ")
