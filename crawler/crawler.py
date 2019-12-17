@@ -22,6 +22,8 @@ class Crawl():
         '''
         Initialise the object with the starting URL of the crawl
         '''
+        # Creating the folder structure
+
         self.starting_url = starting_url
         # Creates a regex pattern using the starting URL defined by the user
         self.regex_pat = 'href="('+self.starting_url+'+.*?)"'
@@ -32,6 +34,7 @@ class Crawl():
         '''
         Takes in the starting URL to crawl
         '''
+        self.createFiles()
         try:
             # Parses the website using urllib.request
             req = urllib.request.Request(url)
@@ -66,11 +69,16 @@ class Crawl():
                     print("    "+i)
                     self.recursiveCrawl(i)
 
+    def createFiles(self):
+        print("FILE CREATED!!")
+        if not os.path.exists("crawl_results"):
+            os.mkdir("crawl_results")
+        os.chdir("crawl_results")
+        crawl_filename = self.run_date_and_time
+
+
     def __repr__(self):
         '''
         Prints out the information on the parse when printing the object
         '''
         return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s\n" % (self.starting_url, self.run_date_and_time, self.regex_pat)
-
-    def crawlNext(self):
-        pass

@@ -1,3 +1,5 @@
 __pycache__/
 .Python
 *.pyc
+crawl_results/
+.DS_Store
