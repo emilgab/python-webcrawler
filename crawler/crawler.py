@@ -14,7 +14,7 @@ class Crawl():
     '''
     # The object will store time data on when it was run.
     # This variable will  be used as filename for the crawl result and for the print statement
-    run_date_and_time = '{0:%d-%m-%Y--%H:%M:%S}'.format(datetime.datetime.now())
+    run_date_and_time = '{0:%d-%m-%Y-}'.format(datetime.datetime.now())
     # The following variable "discovered_links" will contain all unique urls found during the crawl
     discovered_links = []
 
@@ -27,6 +27,7 @@ class Crawl():
         self.starting_url = starting_url
         # Creates a regex pattern using the starting URL defined by the user
         self.regex_pat = 'href="('+self.starting_url+'+.*?)"'
+        self.domain_name = re.findall('[.](.*)[.]',self.starting_url)[0]
         # Calls the method "initialCrawl"
         self.initialCrawl(self.starting_url)
 
@@ -70,11 +71,17 @@ class Crawl():
                     self.recursiveCrawl(i)
 
     def createFiles(self):
-        print("FILE CREATED!!")
+        # Checks if the dictionary exists or not
         if not os.path.exists("crawl_results"):
+            # creates disctionary if it is missing
             os.mkdir("crawl_results")
         os.chdir("crawl_results")
-        crawl_filename = self.run_date_and_time
+        # Creates the desired filename.
+        # This filename shows date (day-month-year) and the domain name
+        crawl_filename = self.run_date_and_time+"crawl_results_for_"+self.domain_name
+        # Opens the file and closes it right away.
+        # But now we have a file we can append to.
+        open(crawl_filename+".txt",'w+').close()
 
 
     def __repr__(self):
