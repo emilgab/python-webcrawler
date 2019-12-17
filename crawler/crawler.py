@@ -31,7 +31,7 @@ class Crawl():
         self.run_date_and_time = '{0:%d-%m-%Y-}'.format(datetime.datetime.now())
         # Creates the desired filename.
         # This filename shows date (day-month-year) and the domain name
-        self.crawl_filename = self.run_date_and_time+"crawl_results_for_"+self.domain_name
+        self.crawl_filename = self.run_date_and_time+"crawl_results_for_"+self.domain_name+".txt"
         self.initialCrawl(self.starting_url)
 
     def initialCrawl(self, url):
@@ -50,6 +50,8 @@ class Crawl():
                     if i in self.discovered_links:
                         continue
                     else:
+                        with open(self.crawl_filename,'a+') as file:
+                            file.write(i+"\n")
                         self.discovered_links.append(i)
                         self.recursiveCrawl(i)
                         print(i)
@@ -69,8 +71,10 @@ class Crawl():
                 if i in self.discovered_links:
                     continue
                 else:
+                    with open(self.crawl_filename, 'a+') as file:
+                        file.write('  '+i+"\n")
                     self.discovered_links.append(i)
-                    print("    "+i)
+                    print('  '+i)
                     self.recursiveCrawl(i)
 
     def createFiles(self):
@@ -82,7 +86,7 @@ class Crawl():
         if not os.path.exists(self.crawl_filename):
             # Opens the file and closes it right away.
             # But now we have a file we can append to.
-            open(self.crawl_filename+".txt",'w+').close()
+            open(self.crawl_filename,'w+').close()
 
 
     def __repr__(self):

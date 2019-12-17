@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 crawl_results/
 .DS_Store
+
+# virtualenv files
+include/
+lib/
+bin/
