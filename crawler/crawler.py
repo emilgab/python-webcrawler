@@ -40,9 +40,12 @@ class Crawl():
             re_result = re.findall(self.regex_pat,str(urlopen.read()))
             if re_result:
                 for i in re_result:
-                    self.discovered_links.append(i)
-                    self.recursiveCrawl(i)
-                    print(i)
+                    if i in self.discovered_links:
+                        continue
+                    else:
+                        self.discovered_links.append(i)
+                        self.recursiveCrawl(i)
+                        print(i)
         except Exception as exception:
             print(exception)
 
