@@ -51,8 +51,11 @@ class Crawl():
 
 
     def recursiveCrawl(self,url):
-        req = urllib.request.Request(url)
-        urlopen = urllib.request.urlopen(req)
+        try:
+            req = urllib.request.Request(url)
+            urlopen = urllib.request.urlopen(req)
+        except urllib.error.HTTPError:
+            return False
         re_result = re.findall(self.regex_pat, str(urlopen.read()))
         if re_result:
             for i in re_result:
