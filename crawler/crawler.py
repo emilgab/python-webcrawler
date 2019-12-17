@@ -15,10 +15,8 @@ class Crawl():
     # The object will store time data on when it was run.
     # This variable will  be used as filename for the crawl result and for the print statement
     run_date_and_time = '{0:%d-%m-%Y--%H:%M:%S}'.format(datetime.datetime.now())
-    # The following variable "known_domains" will contain all unique urls found during the crawl
-    initial_crawl_result = []
-    all_links = []
-    crawl_tree = {}
+    # The following variable "discovered_links" will contain all unique urls found during the crawl
+    discovered_links = []
 
     def __init__(self, starting_url):
         '''
@@ -42,18 +40,25 @@ class Crawl():
             re_result = re.findall(self.regex_pat,str(urlopen.read()))
             if re_result:
                 for i in re_result:
-                    self.initial_crawl_result.append(i)
+                    self.discovered_links.append(i)
+                    self.recursiveCrawl(i)
                     print(i)
-            # Calls the recursiveCrawl method and passes in the first domain
-            self.recursiveCrawl(self.initial_crawl_result[0])
-        except:
-            print("\nCould not find the URL, please try again")
+        except Exception as exception:
+            print(exception)
 
-    def recursiveCrawl(self, url):
-        pass
 
-    def writeToFile(self):
-        pass
+    def recursiveCrawl(self,url):
+        req = urllib.request.Request(url)
+        urlopen = urllib.request.urlopen(req)
+        re_result = re.findall(self.regex_pat, str(urlopen.read()))
+        if re_result:
+            for i in re_result:
+                if i in self.discovered_links:
+                    continue
+                else:
+                    self.discovered_links.append(i)
+                    print("    "+i)
+                    self.recursiveCrawl(i)
 
     def __repr__(self):
         '''
