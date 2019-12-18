@@ -25,7 +25,7 @@ class Crawl():
 
         self.starting_url = starting_url
         # Creates a regex pattern using the starting URL defined by the user
-        self.regex_pat = 'href="('+self.starting_url+'+.*?)"'
+        self.regex_pat_crawl = 'href="('+self.starting_url+'+.*?)"'
         self.domain_name = re.findall('[.](.*)[.]',self.starting_url)[0]
         # Calls the method "initialCrawl"
         # The object will store time data on when it was run.
@@ -37,12 +37,13 @@ class Crawl():
         self.word_to_count = word_to_count
         # Checks for if the user inputs a blank space (which means that the user dont want to count words)
         # This will be set to false if that is the case
-        if self.word_to_count == " ":
+        if self.word_to_count == " " or self.word_to_count == '':
             self.word_to_count = False
         # If word_to_count is True, then we create the filename for the file that will keep the count
         if self.word_to_count:
             # Filename structure: "[date]+count_for_word_[word_to_count]_on_[domain_name].txt
             self.count_filename = self.run_date_and_time+"count_for_word_"+self.word_to_count+"_on_"+self.domain_name+".txt"
+        self.regex_pat_word_count = '["<p>"](.*?)["</p>"]'
         # calls the initialCrawl method and passes in the starting_url that was passed in by the user
         self.initialCrawl(self.starting_url)
 
@@ -63,7 +64,7 @@ class Crawl():
             req = urllib.request.Request(url)
             urlopen = urllib.request.urlopen(req)
             # stores the result of ReGex
-            re_result = re.findall(self.regex_pat,str(urlopen.read()))
+            re_result = re.findall(self.regex_pat_crawl,str(urlopen.read()))
             if re_result:
                 for i in re_result:
                     # if the object in iteration already exists in our self.discovered_links list, then we skip it
@@ -92,7 +93,7 @@ class Crawl():
         # We want to return False, which skips this link to crawling.
         except urllib.error.HTTPError:
             return False
-        re_result = re.findall(self.regex_pat, str(urlopen.read()))
+        re_result = re.findall(self.regex_pat_crawl, str(urlopen.read()))
         if re_result:
             for i in re_result:
                 # Same process as in the initialCrawl() method
@@ -137,4 +138,4 @@ class Crawl():
         #   - Starting domain to crawl
         #   - Date and time of the crawl
         #   - Regular expression pattern used for the crawling of links
-        return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s\n" % (self.starting_url, self.run_date_and_time, self.regex_pat)
+        return "\nStarting domain crawled: %s \nDate and time: %s\nRegEx Pattern: %s\n" % (self.starting_url, self.run_date_and_time, self.regex_pat_crawl)
