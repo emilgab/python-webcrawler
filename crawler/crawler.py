@@ -59,40 +59,27 @@ class Crawl():
             print("Ok, I will Count instances of the word: ",self.word_to_count)
             print("--")
         print("Scraping...")
-        try:
-            # Parses the website using urllib.request
-            req = urllib.request.Request(url)
-            urlopen = urllib.request.urlopen(req)
-            if self.word_to_count:
-                word_count_result = re.findall(self.regex_pat_word_count,str(urlopen.read()))
-                word_count_result = "".join(word_count_result)
-                word_count_result = word_count_result.split()
-                print(word_count_result)
-                for i in word_count_result:
-                    if i.lower() == self.word_to_count:
-                        self.word_count += 1
-                        print(self.word_count)
-                        with open(self.count_filename,"w+") as f:
-                            f.write(str(self.word_count))
-            # stores the result of ReGex
-            re_result = re.findall(self.regex_pat_crawl,str(urlopen.read()))
-            if re_result:
-                for i in re_result:
-                    # if the object in iteration already exists in our self.discovered_links list, then we skip it
-                    if i in self.discovered_links:
-                        continue
-                    else:
-                        # If it is a new link, then we append it to the list of known links
-                        self.discovered_links.append(i)
-                        # We open our file that we created with the createFiles() method and writes down the new url.
-                        # We include a linebreak ("\n") to seperate links by rows
-                        with open(self.crawl_filename,'a+') as file:
-                            file.write(i+"\n")
-                        self.recursiveCrawl(i)
-                        print(i)
-        # If an error appears, then we catch it an prints it out with a message at the beginning.
-        except Exception as exception:
-            print("Error in initialCrawl method: ",exception)
+        # Parses the website using urllib.request
+        req = urllib.request.Request(url)
+        urlopen = urllib.request.urlopen(req)
+        # stores the result of ReGex
+        re_result = re.findall(self.regex_pat_crawl,str(urlopen.read()))
+        if re_result:
+            for i in re_result:
+                # if the object in iteration already exists in our self.discovered_links list, then we skip it
+                if i in self.discovered_links:
+                    continue
+                else:
+                    # If it is a new link, then we append it to the list of known links
+                    self.discovered_links.append(i)
+                    # We open our file that we created with the createFiles() method and writes down the new url.
+                    # We include a linebreak ("\n") to seperate links by rows
+                    with open(self.crawl_filename,'a+') as file:
+                        file.write(i+"\n")
+                    if self.word_to_count:
+                        self.countWords(i)
+                    self.recursiveCrawl(i)
+                    print(i)
 
 
     def recursiveCrawl(self,url):
@@ -116,6 +103,8 @@ class Crawl():
                     with open(self.crawl_filename, 'a+') as file:
                         file.write('  '+i+"\n")
                     print('  '+i)
+                    if self.word_to_count:
+                        self.countWords(i)
                     # If we can find a new and unique link on the page we are scraping, then we want to pass this in this method again
                     # This creates a circle, which will continue until it is no more unique links to scrape.
                     self.recursiveCrawl(i)
@@ -139,6 +128,21 @@ class Crawl():
             # Checks if the file exists from before
             if not os.path.exists(self.count_filename):
                 open(self.count_filename,'w+').close()
+
+    def countWords(self,url):
+        try:
+            req = urllib.request.Request(url)
+            urlopen = urllib.request.urlopen(req)
+        except urllib.error.HTTPError:
+            return False
+        word_count_result = re.findall(self.regex_pat_word_count,str(urlopen.read()))
+        word_count_result = "".join(word_count_result).split()
+        for i in word_count_result:
+            if i.lower() == self.word_to_count:
+                self.word_count += 1
+                print(self.word_count)
+                with open(self.count_filename,"w+") as f:
+                    f.write(str(self.word_count))
 
     def __repr__(self):
         '''
