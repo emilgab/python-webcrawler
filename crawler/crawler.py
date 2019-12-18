@@ -43,7 +43,7 @@ class Crawl():
         if self.word_to_count:
             # Filename structure: "[date]+count_for_word_[word_to_count]_on_[domain_name].txt
             self.count_filename = self.run_date_and_time+"count_for_word_"+self.word_to_count+"_on_"+self.domain_name+".txt"
-        self.regex_pat_word_count = '["<p>"](.*?)["</p>"]'
+            self.regex_pat_word_count = '["<p>"](.*?)["</p>"]'
         # calls the initialCrawl method and passes in the starting_url that was passed in by the user
         self.initialCrawl(self.starting_url)
 
@@ -63,6 +63,17 @@ class Crawl():
             # Parses the website using urllib.request
             req = urllib.request.Request(url)
             urlopen = urllib.request.urlopen(req)
+            if self.word_to_count:
+                word_count_result = re.findall(self.regex_pat_word_count,str(urlopen.read()))
+                word_count_result = "".join(word_count_result)
+                word_count_result = word_count_result.split()
+                print(word_count_result)
+                for i in word_count_result:
+                    if i.lower() == self.word_to_count:
+                        self.word_count += 1
+                        print(self.word_count)
+                        with open(self.count_filename,"w+") as f:
+                            f.write(str(self.word_count))
             # stores the result of ReGex
             re_result = re.findall(self.regex_pat_crawl,str(urlopen.read()))
             if re_result:
