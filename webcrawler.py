@@ -32,7 +32,7 @@ def welcome():
     print("A folder will be created in the same path as the script containing crawl results".center(int(columns)))
     print(" ")
     print("You will be asked to enter a word to count.".center(int(columns)))
-    print("If you don't want to count a word then just input a space and hit enter.".center(int(columns)))
+    print("If you don't want to count a word then just input a space or just hit enter.".center(int(columns)))
     print("\n"*(int(rows)//5))
 
     try:

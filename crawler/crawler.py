@@ -19,27 +19,27 @@ class Crawl():
 
     def __init__(self, starting_url, word_to_count):
         '''
-        Initialise the object with the starting URL of the crawl
+        Initialise the object with the starting URL and the word the user would like to count
         '''
-        # Creating the folder structure
-
+        # We will use the starting URL to initialise the first crawl
         self.starting_url = starting_url
         # Creates a regex pattern using the starting URL defined by the user
         self.regex_pat_crawl = 'href="('+self.starting_url+'+.*?)"'
+        # Uses regular expression to get just the domain name (example, "oslomet" instead of "https://www.oslomet.no/"")
         self.domain_name = re.findall('[.](.*)[.]',self.starting_url)[0]
-        # Calls the method "initialCrawl"
         # The object will store time data on when it was run.
-        # This variable will  be used as filename for the crawl result and for the print statement
+        # This variable will be used as filename for the crawl result and for the print statement
         self.run_date_and_time = '{0:%d-%m-%Y-}'.format(datetime.datetime.now())
         # Creates the desired filename.
         # This filename shows date (day-month-year) and the domain name
         self.crawl_filename = self.run_date_and_time+"crawl_results_for_"+self.domain_name+".txt"
         self.word_to_count = word_to_count
-        # Checks for if the user inputs a blank space (which means that the user dont want to count words)
+        # Checks for if the user inputs a blank space or nothing (which means that the user dont want to count words)
         # This will be set to false if that is the case
         if self.word_to_count == " " or self.word_to_count == '':
             self.word_to_count = False
         # If word_to_count is True, then we create the filename for the file that will keep the count
+        # We will also create the regular expression that will look for words inside paragraph tags
         if self.word_to_count:
             # Filename structure: "[date]+count_for_word_[word_to_count]_on_[domain_name].txt
             self.count_filename = self.run_date_and_time+"count_for_word_"+self.word_to_count+"_on_"+self.domain_name+".txt"
@@ -49,7 +49,7 @@ class Crawl():
 
     def initialCrawl(self, url):
         '''
-        Takes in the starting URL to crawl and crawls it
+        Takes in the starting URL to crawl and scrapes it for information
         '''
         # Calls the createFiles() method that creates the necessary files and folders
         self.createFiles()
@@ -62,8 +62,9 @@ class Crawl():
         # Parses the website using urllib.request
         req = urllib.request.Request(url)
         urlopen = urllib.request.urlopen(req)
-        # stores the result of ReGex
+        # stores the result of regular expression
         re_result = re.findall(self.regex_pat_crawl,str(urlopen.read()))
+        # iterates over the result of the regular expression.
         if re_result:
             for i in re_result:
                 # if the object in iteration already exists in our self.discovered_links list, then we skip it
@@ -75,8 +76,10 @@ class Crawl():
                     # We open our file that we created with the createFiles() method and writes down the new url.
                     # We include a linebreak ("\n") to seperate links by rows
                     with open(self.crawl_filename,'a+') as file:
+                        # Writes the url to the file (in append mode) and adds a line break
                         file.write(i+"\n")
                     if self.word_to_count:
+                        # If we have to count a word, then we will call the countwords method
                         self.countWords(i)
                     self.recursiveCrawl(i)
                     print(i)
@@ -91,11 +94,11 @@ class Crawl():
         # We want to return False, which skips this link to crawling.
         except urllib.error.HTTPError:
             return False
+        # Same process as in the initialCrawl() method
+        # The only differences is that we write an indentation (two spaces) in the file and on the screen and the recursiveness
         re_result = re.findall(self.regex_pat_crawl, str(urlopen.read()))
         if re_result:
             for i in re_result:
-                # Same process as in the initialCrawl() method
-                # The only differences is that we write an indentation (two spaces) in the file and on the screen.
                 if i in self.discovered_links:
                     continue
                 else:
@@ -112,14 +115,16 @@ class Crawl():
     def createFiles(self):
         # Checks if the dictionary exists or not
         if not os.path.exists("crawl_results"):
-            # creates disctionary if it is missing
+            # creates a dictionary if it is missing
             os.mkdir("crawl_results")
         os.chdir("crawl_results")
         if not os.path.exists(self.crawl_filename):
             # Opens the file and closes it right away.
-            # But now we have a file we can append to.
+            # now we have a file we can append to.
             open(self.crawl_filename,'w+').close()
         else:
+            # if the file already exists, we open it and appends each link that already is discovered to the list
+            # we will also make sure that the link does not contain any spaces before or linebreaks after
             with open(self.crawl_filename,'r+') as file:
                 for i in file.readlines():
                     self.discovered_links.append(i.strip(" \n"))
@@ -130,19 +135,26 @@ class Crawl():
                 open(self.count_filename,'w+').close()
 
     def countWords(self,url):
+        # Checks for 404 page not found
         try:
             req = urllib.request.Request(url)
             urlopen = urllib.request.urlopen(req)
         except urllib.error.HTTPError:
             return False
+        # Assigns the result of regular expression
         word_count_result = re.findall(self.regex_pat_word_count,str(urlopen.read()))
+        # This process joins everything that was found with the Regular expressions to one big string
+        # the .split() method splits this string again by every space
         word_count_result = "".join(word_count_result).split()
+        # iterates over the new list that was created with the split method.
+        # this combines the words in the word_count_result to the word that was put in by the user
+        # if there is a match, then we print the count to the screen and writes the count to the file.
         for i in word_count_result:
             if i.lower() == self.word_to_count:
                 self.word_count += 1
                 print(self.word_count)
                 with open(self.count_filename,"w+") as f:
-                    f.write(str(self.word_count))
+                    f.write((str(self.word_to_count)+" = "+str(self.word_count)))
 
     def __repr__(self):
         '''
