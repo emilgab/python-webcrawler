@@ -8,3 +8,6 @@ crawl_results/
 include/
 lib/
 bin/
+
+# misc
+*.zip
